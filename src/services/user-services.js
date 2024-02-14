@@ -1,27 +1,50 @@
-const User = require("../models/user");
+const UserRepository = require("../Repository/user_repository.js");
 
 class UserService {
-  // In memory store
-  users = [];
-
-  async createUser(req) {
-    
-    const id = req.body.id; 
-    const name = req.body.name;
-    const email = req.body.email;
-    const age = req.body.age;
-    
-    const user = new User(id, name, email, age);
-  
-    this.users.push(user);
-    return "Successfully created";
+  constructor() {
+    this.userRepository = new UserRepository();
   }
 
-  async getAllUsers() {
-    return this.users;
+  async signUp(data) {
+    try {
+      const user = await this.userRepository.create(data);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  // Other user methods
+  async getUser(data) {
+    try {
+      const user = await this.userRepository.get(data);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signIn(data) {
+    try {
+      const email = data.email;
+      const currentPassword = data.password;
+      const user = await this.userRepository.findBy({ email });
+
+      if (!user) {
+        throw {
+          message: "No User found",
+        };
+      }
+      if (!user.comparePassword(currentPassword)) {
+        throw {
+          message: "Incorrect password",
+        };
+      }
+      console.log("User successfully logged in");
+      console.log(user);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
-module.exports = new UserService();
+module.exports = UserService;

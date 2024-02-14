@@ -1,44 +1,39 @@
-const Policy = require("../models/policyholder");
-const policy_details = require("./policy_details");
+const PolicyHolderRepository = require("../Repository/policyholder_repository");
 
-// Create
 class PolicyService {
-  policies = [];
-  async createPolicyDets(policyData) {
-    const policy = new Policy(
-      policyData.id,
-      policyData.policyHolderId,
-      policyData.type,
-      policyData.amount,
-      policyData.effectiveDate,
-      policyData.expirationDate
-    );
-
-    policies.push(policy);
-    return "Policy details added successfully";
+  constructor() {
+    this.policyHolderRepository = new PolicyHolderRepository();
   }
 
-  // Get All Policies
-  async getPoliciesDets() {
-    return policies;
+  async signUp(data) {
+    try {
+      const PolicyHolder = await this.policyHolderRepository.create(data);
+      return PolicyHolder;
+    } catch (error) {
+      console.log(h12)
+      throw error;
+    }
   }
 
-  // Get Single Policy
-  async getPolicydets(id) {
-    return policies.find((p) => p.id === id);
+  async getPolicy(data) {
+    try {
+      const PolicyHolder = await this.policyHolderRepository.get(data);
+      return PolicyHolder;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  // Update Policy
-  async updatePolicydets(id, updateData) {
-    const policy = getPolicy(id);
-    Object.assign(policy, updateData);
-    return policy;
-  }
-
-  // Delete Policy
-  async deletePolicy(id) {
-    policies = policies.filter((p) => p.id !== id);
+  async updatePolicy(id, data) {
+    try {
+      // Find policy by id
+      let policy = await this.policyHolderRepository.update(id, data);
+      policy = await policy.save();
+      return policy;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
-module.exports = new PolicyService();
+module.exports = PolicyService;

@@ -1,10 +1,16 @@
-class Claims {
-  constructor(claimid, claimamt, date) {
-    this.claimid = claimid;
-    this.claimamt = claimamt;
-    this.date = date;
-  }
-}
+const mongoose = require("mongoose");
+const claimScehma = new mongoose.Schema({
+  claimamt: {
+    type: Number,
+  },
+  claimdate: {
+    type: Number,
+  },
+  policyHolderId: {
+    type: Number,
+  },
+});
 
-modeule.exports = Claims;
+const Claim = mongoose.model("Claim", claimScehma);
 
+module.exports = Claim;
